@@ -8,8 +8,3 @@ def connect_to_db():
         'Trusted_Connection=yes;'
     )
     return connection
-
-if connect_to_db():
-    print('Succesfull')
-else:
-    print('Failed')
