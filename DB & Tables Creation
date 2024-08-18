@@ -1,0 +1,16 @@
+CREATE DATABASE InstituteDB;
+USE InstituteDB;
+CREATE TABLE Staff (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(100),
+    position NVARCHAR(100),
+    institute_name NVARCHAR(100),
+    location NVARCHAR(100)
+);
+CREATE TABLE Students (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(100),
+    course NVARCHAR(100),
+    institute_name NVARCHAR(100),
+    location NVARCHAR(100)
+);
