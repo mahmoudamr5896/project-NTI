@@ -1,16 +1,28 @@
-from  logic import Institute ,Staff,Student
-import db
-import pandas as pd
-
+from logic import Institute,Staff,Student
+from db import connect_to_db
 def main():
-    # Create an institute
-    Name = input('Choose Institute Name [ NTI , ITI ] :')
-    Location =input('Choose Institute Location :')
+    # Input validation for institute name
+    valid_institutes = ['NTI', 'ITI']
+    while True:
+        name = input('Choose Institute Name [NTI, ITI]: ').strip().upper()
+        if name in valid_institutes:
+            break
+        else:
+            print("Invalid institute name. Please choose either 'NTI' or 'ITI'.")
 
-    institute = Institute(Name, Location)
+    # Input validation for location
+    while True:
+        location = input('Enter Institute Location: ').strip()
+        if location:
+            break
+        else:
+            print("Location cannot be empty. Please enter a valid location.")
+
+    # Create an institute
+    institute = Institute(name, location)
 
     # Connect to the database
-    connection = db.connect_to_db()
+    connection = connect_to_db()
 
     while True:
         print("\n--- Institute Management System ---")
@@ -23,24 +35,25 @@ def main():
         choice = input("Enter your choice: ")
 
         if choice == '1':
-            staff_name = input("Enter staff name: ")
-            position = input("Enter position: ")
+            staff_name = input("Enter staff name: ").strip()
+            position = input("Enter position: ").strip()
             staff = Staff(institute.name, institute.location, staff_name, position)
             staff.save_to_db(connection)
-       
+
         elif choice == '2':
-            student_name = input("Enter student name: ")
-            course = input("Enter course: ")
+            student_name = input("Enter student name: ").strip()
+            course = input("Enter course: ").strip()
             student = Student(institute.name, institute.location, student_name, course)
             student.save_to_db(connection)
+
         elif choice == '3':
-            print("\nStaff Members:")
-            staff_members_df = Staff.fetch_all(connection)
+            print("\nStaff Members at", institute.name, "in", institute.location)
+            staff_members_df = Staff.fetch_all(connection, institute_name=institute.name, location=institute.location)
             print(staff_members_df)
 
         elif choice == '4':
-            print("\nStudents:")
-            students_df = Student.fetch_all(connection)
+            print("\nStudents at", institute.name, "in", institute.location)
+            students_df = Student.fetch_all(connection, institute_name=institute.name, location=institute.location)
             print(students_df)
 
         elif choice == '5':
@@ -50,13 +63,7 @@ def main():
         else:
             print("Invalid choice, please try again.")
 
-    # Close the database connection
     connection.close()
-
-
-if db.connect_to_db():
-    print('connected succ')
 
 if __name__ == "__main__":
     main()
-

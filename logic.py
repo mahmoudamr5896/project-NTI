@@ -1,4 +1,4 @@
-import db
+from  logic import Institute ,Staff,Student
 import pandas as pd
 class Institute:
     def __init__(self, name, location):
@@ -24,10 +24,16 @@ class Staff(Institute):
         print(f"Staff {self.staff_name} saved to the database.")
 
     @staticmethod
-    def fetch_all(connection):
+    def fetch_all(connection, institute_name=None, location=None):
         query = 'SELECT * FROM Staff'
-        return pd.read_sql(query, connection)
+        params = []
+        if institute_name and location:
+            query += ' WHERE institute_name = ? AND location = ?'
+            params = [institute_name, location]
+        return pd.read_sql(query, connection, params=params)
 
+
+# Derived class: Student
 class Student(Institute):
     def __init__(self, name, location, student_name, course):
         super().__init__(name, location)
@@ -44,6 +50,10 @@ class Student(Institute):
         print(f"Student {self.student_name} saved to the database.")
 
     @staticmethod
-    def fetch_all(connection):
+    def fetch_all(connection, institute_name=None, location=None):
         query = 'SELECT * FROM Students'
-        return pd.read_sql(query, connection)
+        params = []
+        if institute_name and location:
+            query += ' WHERE institute_name = ? AND location = ?'
+            params = [institute_name, location]
+        return pd.read_sql(query, connection, params=params)
