@@ -1,6 +1,8 @@
-from logic import Institute ,Staff,Student,User
+from  logic import Institute ,Staff,Student,User ,hash_password
+from db  import connect_to_db
+import hashlib
+
 import pandas as pd
-from db import connect_to_db
 def mainstaff(connection, institute_name, location, user):
     while True:
         print("\n--- Staff Management System ---")
@@ -15,18 +17,21 @@ def mainstaff(connection, institute_name, location, user):
         if choice == '1':
             staff_name = input("Enter staff name: ").strip()
             position = input("Enter position: ").strip()
-            staff = Staff(institute_name, location, staff_name, position)
-            staff.save_to_db(connection)
+
+            if staff_name.isnumeric() and position.isnumeric():
+                print('invalid input ')
+                break
+            else:
+                staff = Staff(institute_name, location, staff_name, position)
+                staff.save_to_db(connection)
 
         elif choice == '2':
             print("\nAll Staff Members")
             staff_members_df = Staff.fetch_all(connection, institute_name, location)
             print(staff_members_df)
-
         elif choice == '3':
             staff_id = int(input("Enter Staff ID to delete: "))
             Staff.delete_by_id(connection, staff_id, user)
-
         elif choice == '4':
             staff_id = int(input("Enter Staff ID to edit: "))
             new_name = input("Enter new staff name: ").strip()
@@ -54,9 +59,12 @@ def mainstudent(connection, institute_name, location, user):
         if choice == '1':
             student_name = input("Enter student name: ").strip()
             course = input("Enter course: ").strip()
-            student = Student(institute_name, location, student_name, course)
-            student.save_to_db(connection)
-
+            if student_name.isnumeric() and course.isnumeric():
+                print('invalid input ')
+                break
+            else:
+                student = Student(institute_name, location, student_name, course)
+                student.save_to_db(connection)
         elif choice == '2':
             print("\nAll Students")
             students_df = Student.fetch_all(connection, institute_name, location)
@@ -65,13 +73,11 @@ def mainstudent(connection, institute_name, location, user):
         elif choice == '3':
             student_id = int(input("Enter Student ID to delete: "))
             Student.delete_by_id(connection, student_id, user)
-
         elif choice == '4':
             student_id = int(input("Enter Student ID to edit: "))
             new_name = input("Enter new student name: ").strip()
             new_course = input("Enter new course: ").strip()
             Student.edit_by_id(connection, student_id, new_name, new_course, user)
-
         elif choice == '5':
             print("Exiting the program.")
             break
@@ -95,8 +101,8 @@ def main():
             username = input("Enter username: ").strip()
             password = input("Enter password: ").strip()
             role = input("Enter role (admin/staff): ").strip().lower()
-            if role not in ['admin', 'staff']:
-                print("Invalid role. Please choose 'admin' or 'staff'.")
+            if role not in ['admin', 'staff','student']:
+                print("Invalid role. Please choose 'admin' or 'staff' or 'student'.")
                 continue
             User.register(connection, username, password, role)
 
@@ -127,11 +133,11 @@ def main():
     # Input validation for location
     while True:
         location = input('Enter Institute Location: ').strip()
-        if location:
+        if location.isnumeric() and location:
+            print('invalid input ')
             break
         else:
             print("Location cannot be empty. Please enter a valid location.")
-
     # Create an institute
     institute = Institute(name, location)
 
@@ -158,5 +164,9 @@ def main():
 
     connection.close()
 
+if connect_to_db():
+    print('connected succ')
+
 if __name__ == "__main__":
     main()
+

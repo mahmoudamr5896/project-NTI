@@ -1,5 +1,7 @@
+
 import pyodbc
 
+# Database connection
 def connect_to_db():
     connection = pyodbc.connect(
         'DRIVER={SQL Server};'
@@ -9,7 +11,3 @@ def connect_to_db():
     )
     return connection
 
-if connect_to_db():
-    print('Succesfull')
-else:
-    print('Failed')

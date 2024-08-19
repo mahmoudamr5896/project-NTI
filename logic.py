@@ -1,5 +1,6 @@
 import pandas as pd
 import hashlib
+
 # Utility function to hash passwords
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
