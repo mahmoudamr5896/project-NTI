@@ -14,3 +14,10 @@ CREATE TABLE Students (
     institute_name NVARCHAR(100),
     location NVARCHAR(100)
 );
+
+CREATE TABLE Users (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    username NVARCHAR(50) NOT NULL UNIQUE,
+    password NVARCHAR(64) NOT NULL,
+    role NVARCHAR(10) CHECK (role IN ('admin', 'staff')) NOT NULL
+);
